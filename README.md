@@ -1,4 +1,4 @@
-example modbus with trio motion controller
+example modbus communication
 ===
 
 ```shell script
