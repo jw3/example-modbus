@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/hex"
 	"flag"
+	"fmt"
 	"github.com/goburrow/modbus"
 	"math/rand"
 	"time"
@@ -19,15 +20,26 @@ func main() {
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 
+	v := r1.Intn(255)
+	fmt.Println("random value: ", v)
+
 	client := modbus.TCPClient(*serverUri)
 
-	results, _ := client.ReadInputRegisters(8, 1)
+	results, e := client.ReadInputRegisters(8, 1)
+	if e != nil {
+		panic(e.Error())
+	}
 	println(hex.EncodeToString(results))
 
-	v := r1.Intn(255)
-	results, _ = client.WriteSingleRegister(8, uint16(v))
+	results, e = client.WriteSingleRegister(8, uint16(v))
+	if e != nil {
+		panic(e.Error())
+	}
 	println(hex.EncodeToString(results))
 
-	results, _ = client.ReadInputRegisters(8, 1)
+	results, e = client.ReadInputRegisters(8, 1)
+	if e != nil {
+		panic(e.Error())
+	}
 	println(hex.EncodeToString(results))
 }
